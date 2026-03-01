@@ -73,19 +73,19 @@ If you run with `docker compose`, you can omit `DATABASE_URL` and the app will d
 ### 3) Run
 
 ```bash
-uvicorn app.main:app --reload --port 8000
+uvicorn app.main:app --reload --port 8294
 ```
 
 Open docs:
 
-- http://localhost:8000/docs
+- http://localhost:8294/docs
 
 ## Usage
 
 ### Analyze by upload
 
 ```bash
-curl -s -X POST "http://localhost:8000/analyze?max_pages=10&max_slides=20" \
+curl -s -X POST "http://localhost:8294/analyze?max_pages=10&max_slides=20" \
   -H "accept: application/json" \
   -F "file=@sample.pdf" \
   -F "webhook_url=https://example.com/webhooks/doc-analyzer"
@@ -94,7 +94,7 @@ curl -s -X POST "http://localhost:8000/analyze?max_pages=10&max_slides=20" \
 ### Analyze by URL
 
 ```bash
-curl -s -X POST "http://localhost:8000/analyze/url?max_pages=10&max_slides=20" \
+curl -s -X POST "http://localhost:8294/analyze/url?max_pages=10&max_slides=20" \
   -H "Content-Type: application/json" \
   -d "{\"file_url\":\"https://example.com/sample.pdf\",\"filename\":\"sample.pdf\",\"webhook_url\":\"https://example.com/webhooks/doc-analyzer\"}"
 ```
@@ -102,7 +102,7 @@ curl -s -X POST "http://localhost:8000/analyze/url?max_pages=10&max_slides=20" \
 ### Read stored analysis
 
 ```bash
-curl -s "http://localhost:8000/analysis-runs/<analysis_id>"
+curl -s "http://localhost:8294/analysis-runs/<analysis_id>"
 ```
 
 ## Response
@@ -140,7 +140,7 @@ The included `Dockerfile` uses Python 3.11:
 
 ```bash
 docker build -t doc-analyzer .
-docker run --rm -p 8000:8000 --env-file .env doc-analyzer
+docker run --rm -p 8294:8294 --env-file .env doc-analyzer
 ```
 
 ## Docker Compose
@@ -171,7 +171,7 @@ docker compose down -v
 
 Defaults used by `docker-compose.yml`:
 
-- API: `http://localhost:8000`
+- API: `http://localhost:8294`
 - PostgreSQL: `localhost:5432`
 - Database: `doc_analyzer`
 - User: `postgres`
