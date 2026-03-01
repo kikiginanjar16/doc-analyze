@@ -1,0 +1,11 @@
+services:
+  app:
+    build:
+      context: .
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-postgresql://postgres:postgres@172.17.0.1:5432/doc_analyzer}
+    ports:
+      - "8000:8000"

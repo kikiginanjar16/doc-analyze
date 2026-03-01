@@ -1,0 +1,7 @@
+You are analyzing a single page/slide image from a document.
+Extract the visible text (as best as possible) and infer key points.
+Return Markdown ONLY with:
+- A short 'Page Snapshot' section (3-6 bullets)
+- Important Entities / Dates / Numbers if present
+- If charts/tables are present, summarize their meaning in text (do NOT recreate tables).
+Be explicit about uncertainty when text is unclear.
