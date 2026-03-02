@@ -66,6 +66,7 @@ class RagQueryPayload(BaseModel):
     reference_id: Optional[str] = Field(None, description="Optional reference ID for cross-document RAG.")
     top_k: int = Field(4, ge=1, le=8, description="How many retrieved chunks to send into the answer step.")
     application: Optional[str] = Field(None, description="Optional application filter, mainly for reference_id queries.")
+    document_id: Optional[str] = Field(None, description="Optional document filter, mainly for reference_id queries.")
 
 
 @app.on_event("startup")
@@ -351,6 +352,7 @@ def ask_rag(
     analysis_id = _normalize_optional_text(payload.analysis_id)
     reference_id = _normalize_optional_text(payload.reference_id)
     application = _normalize_optional_text(payload.application)
+    document_id = _normalize_optional_text(payload.document_id)
 
     if bool(analysis_id) == bool(reference_id):
         raise HTTPException(status_code=400, detail="Provide exactly one of analysis_id or reference_id.")
@@ -396,9 +398,10 @@ def ask_rag(
         stored_chunks = get_chunks_by_reference_id(
             reference_id,
             application=application,
+            document_id=document_id,
         )
         if not stored_chunks:
-            raise HTTPException(status_code=404, detail="No stored analysis chunks found for the given reference_id.")
+            raise HTTPException(status_code=404, detail="No stored analysis chunks found for the given reference_id and filters.")
 
         retrieved_chunks = select_relevant_chunks_from_list(
             [chunk["content"] for chunk in stored_chunks],
@@ -429,6 +432,7 @@ def ask_rag(
         response_payload = {
             "reference_id": reference_id,
             "application": application,
+            "document_id": document_id,
             "question": question,
             "retrieved_chunks": retrieved_chunks,
         }

@@ -71,7 +71,7 @@ WEBHOOK_MAX_RETRIES=3
 WEBHOOK_RETRY_BACKOFF_SECONDS=2
 ```
 
-If you run with `docker compose`, you can omit `DATABASE_URL` and the app will default to the bundled PostgreSQL service at `db:5432`.
+If `DATABASE_URL` is omitted, the API still runs, but PostgreSQL-backed persistence and storage-based RAG are disabled.
 
 ### 3) Run
 
@@ -214,7 +214,7 @@ curl -s -X POST "http://localhost:8294/rag" \
 - `/analyze` is for multipart file uploads only
 - `/analyze/url` is for JSON body only
 - `/rag` accepts exactly one of `analysis_id` or `reference_id`
-- For `reference_id` queries, `/rag` can use optional `application` to avoid mixing records from different apps
+- For `reference_id` queries, `/rag` can use optional `application` and `document_id` filters to narrow retrieval scope
 - Swagger UI (`/docs`) now exposes the additional fields and the RAG request schema
 
 ## Docker
@@ -228,7 +228,7 @@ docker run --rm -p 8294:8294 --env-file .env doc-analyzer
 
 ## Docker Compose
 
-Run the API and PostgreSQL together:
+Run the API container:
 
 ```bash
 docker compose up --build
@@ -246,16 +246,7 @@ Stop services:
 docker compose down
 ```
 
-Stop services and remove PostgreSQL data volume:
-
-```bash
-docker compose down -v
-```
-
 Defaults used by `docker-compose.yml`:
 
 - API: `http://localhost:8294`
-- PostgreSQL: `localhost:5432`
-- Database: `doc_analyzer`
-- User: `postgres`
-- Password: `postgres`
+- `DATABASE_URL` is read from `.env` if you want PostgreSQL persistence

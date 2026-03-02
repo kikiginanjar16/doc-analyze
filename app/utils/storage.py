@@ -229,6 +229,7 @@ def get_chunks_by_reference_id(
     reference_id: str,
     *,
     application: Optional[str] = None,
+    document_id: Optional[str] = None,
 ) -> list[dict[str, Any]]:
     if not _storage_ready or psycopg is None or not reference_id:
         return []
@@ -252,6 +253,10 @@ def get_chunks_by_reference_id(
     if application:
         query += " AND ar.application = %s"
         params.append(application)
+
+    if document_id:
+        query += " AND ar.document_id = %s"
+        params.append(document_id)
 
     query += " ORDER BY ar.created_at DESC, ac.chunk_index ASC"
 
