@@ -102,6 +102,32 @@ def summarize_text_markdown(text: str, system_prompt: str) -> str:
     )
     return _clean_markdown(_chat_completion_text(resp))
 
+
+def answer_question_with_context(question: str, context: str, system_prompt: str) -> str:
+    client = get_client()
+    user_prompt = f"Pertanyaan:\n{question.strip()}\n\nKonteks dokumen:\n{context.strip()}"
+    if hasattr(client, "responses"):
+        resp = client.responses.create(
+            model=OPENAI_MODEL_TEXT,
+            input=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt},
+            ],
+            temperature=0.1,
+        )
+        return resp.output_text.strip()
+
+    resp = client.chat.completions.create(
+        model=OPENAI_MODEL_TEXT,
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt},
+        ],
+        temperature=0.1,
+    )
+    return _chat_completion_text(resp)
+
+
 def vision_page_to_markdown(image_bytes: bytes, mime: str, system_prompt: str, hint: str = "") -> str:
     client = get_client()
     b64 = base64.b64encode(image_bytes).decode("ascii")
